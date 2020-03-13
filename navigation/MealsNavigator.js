@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform } from 'react-native'
+import { Platform, Text } from 'react-native'
 import { createStackNavigator, createAppContainer, createBottomTabNavigator, createDrawerNavigator } from 'react-navigation';
 import { createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs'
 
@@ -54,14 +54,16 @@ const BottomTabNavRouteConfig = {
         screen: MealsNavigator,
         navigationOptions: {
             tabBarIcon: (tabInfo) => { return <Ionicons name="ios-restaurant" size={25} color={tabInfo.tintColor} />},
-            tabBarColor: COLOR.primaryColor
+            tabBarColor: COLOR.primaryColor,
+            tabBarLabel: (<Text style={{fontFamily: 'open-sans'}}>Meals</Text>)
         }
     },
     Favorite: {
         screen: FavoriteStackNavigator,
         navigationOptions: {
             tabBarIcon: (tabInfo) => {return <Ionicons name="ios-star" size={25} color={tabInfo.tintColor}  />},
-            tabBarColor: COLOR.accentColor
+            tabBarColor: COLOR.accentColor,
+            tabBarLabel: (<Text style={{fontFamily: 'open-sans'}}>Favorites</Text>)
         }
     }  
 }
@@ -69,7 +71,7 @@ const BottomTabNavRouteConfig = {
 const BottomTabNavigator = Platform.OS === 'android' ? 
 createMaterialBottomTabNavigator(BottomTabNavRouteConfig,{
     activeColor: "white",
-    shifting: true
+    shifting: true,
 }) 
 :
 createBottomTabNavigator(BottomTabNavRouteConfig, {
@@ -89,13 +91,23 @@ const FilterStackNavigator = createStackNavigator({
             headerTintColor: 'white',
             headerTitleStyle:{
                 fontFamily: 'open-sans-bold',
+            },
+            headerTitleStyle:{
+                fontFamily: 'open-sans-bold',
             }
         }
     })
 
 const MainNavigator = createDrawerNavigator({
-    MealFavs: BottomTabNavigator,
+    MealFavs:{screen: BottomTabNavigator, navigationOptions: {drawerLabel: 'Meals'}},
     Filter: FilterStackNavigator
+},{
+    contentOptions:{
+        activeTintColor: COLOR.accentColor,
+        labelStyle: {
+            fontFamily: 'open-sans-bold',
+        }
+    },
 })
 
 
