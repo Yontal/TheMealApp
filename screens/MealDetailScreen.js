@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import {
     ScrollView,
     View,
@@ -6,9 +6,10 @@ import {
     Text,
     StyleSheet
         } from 'react-native';
-import { MEALS } from '../data/dummy-data'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import CustomHeaderButton from '../components/HeaderButton'
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleFavorite } from '../store/actions/meals'
 
 const ListItem = props => {
     return (
@@ -19,8 +20,20 @@ const ListItem = props => {
   };
 
 const MealDetailScreen = props =>{
+    const availableMeals = useSelector(state => state.meals.meals)
+    const selectedMeal = availableMeals.find(meal => (meal.id.indexOf(props.navigation.getParam('id')) >= 0  ));
 
-    const selectedMeal = MEALS.find(meal => (meal.id.indexOf(props.navigation.getParam('id')) >= 0  ));
+    const dispatch = useDispatch();
+    const toggleFavoriteHandler = useCallback(() => {
+        dispatch(toggleFavorite(selectedMeal.id));
+    }, [dispatch]);
+
+    useEffect(() => {
+        props.navigation.setParams({
+            toggleFavorite: toggleFavoriteHandler,
+        })
+    }, [toggleFavoriteHandler]);
+
     return(
         <ScrollView>
             <Image source={{ uri: selectedMeal.imageUrl }} style={styles.image} />
@@ -42,17 +55,15 @@ const MealDetailScreen = props =>{
 }
 
 MealDetailScreen.navigationOptions = (navigationData) => {
-    const selectedMeal = MEALS.find(meal => (meal.id.indexOf(navigationData.navigation.getParam('id')) >= 0  ));
+    const toggleFavorite = navigationData.navigation.getParam('toggleFavorite');
     return {
-        headerTitle: selectedMeal.title,
+        headerTitle: navigationData.navigation.getParam('title'),
         headerRight: (
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item 
                     title="Favorite!"
                     iconName="ios-star"
-                    onPress={() => {
-                        console.log('Favorite!')
-                    }} />
+                    onPress={toggleFavorite} />
             </HeaderButtons>
         )
     }

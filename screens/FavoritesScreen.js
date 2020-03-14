@@ -1,21 +1,14 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import MealList from '../components/MealList'
-import { MEALS } from '../data/dummy-data'
+import {StyleSheet} from 'react-native';
+import MealList from '../components/MealList';
+import { useSelector } from 'react-redux';
 
 const FavoritesScreen = props =>{
+    const favoriteMeals = useSelector(state => state.meals.favoriteMeals)
     return(
-        <MealList listData={MEALS} navigation={props.navigation} />
+        <MealList listData={favoriteMeals} navigation={props.navigation} />
     );
 }
-
-const styles = StyleSheet.create({
-    screen:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-});
 
 FavoritesScreen.navigationOptions = {
     headerTitle: 'Favorite meals'
